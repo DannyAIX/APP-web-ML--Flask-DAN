@@ -1,0 +1,256 @@
+/* ================================================================== */
+/* static/css/style.css - ESTILOS PERSONALIZADOS */
+/* ================================================================== */
+
+:root {
+    --primary-color: #0d6efd;
+    --success-color: #198754;
+    --warning-color: #ffc107;
+    --danger-color: #dc3545;
+    --info-color: #0dcaf0;
+    --dark-color: #212529;
+    --light-color: #f8f9fa;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: #f5f7fa;
+    color: #333;
+}
+
+/* ====== Navbar ====== */
+.navbar {
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.navbar-brand {
+    font-weight: 600;
+    font-size: 1.5rem;
+}
+
+/* ====== Hero Section ====== */
+.hero-section {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 80px 0;
+    margin-bottom: 50px;
+}
+
+.hero-section h1 {
+    animation: fadeInUp 0.8s ease-out;
+}
+
+.hero-section .lead {
+    animation: fadeInUp 1s ease-out;
+}
+
+.hero-image {
+    text-align: center;
+    animation: float 3s ease-in-out infinite;
+}
+
+.feature-badges .badge {
+    padding: 10px 15px;
+    font-size: 0.9rem;
+    margin-bottom: 10px;
+    animation: fadeIn 1.2s ease-out;
+}
+
+/* ====== Form Section ====== */
+.form-section {
+    margin-bottom: 50px;
+}
+
+.section-header {
+    border-left: 4px solid var(--primary-color);
+    padding-left: 15px;
+    margin-top: 30px;
+}
+
+.section-header h4 {
+    color: var(--primary-color);
+    font-weight: 600;
+}
+
+.form-control:focus,
+.form-select:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25);
+}
+
+.card {
+    border: none;
+    border-radius: 15px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.15) !important;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border: none;
+    padding: 12px 40px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.btn-primary:hover {
+    transform: scale(1.05);
+    box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+}
+
+/* ====== Features Section ====== */
+.features-section {
+    padding: 80px 0;
+}
+
+.feature-card {
+    padding: 30px;
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+    transition: all 0.3s ease;
+    height: 100%;
+}
+
+.feature-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+}
+
+.feature-icon {
+    margin-bottom: 20px;
+}
+
+/* ====== Results Section ====== */
+.results-section {
+    min-height: 70vh;
+}
+
+.stat-box {
+    background: #f8f9fa;
+    padding: 30px;
+    border-radius: 15px;
+    margin-top: 20px;
+    transition: all 0.3s ease;
+}
+
+.stat-box:hover {
+    background: #e9ecef;
+    transform: scale(1.05);
+}
+
+/* ====== Footer ====== */
+footer {
+    margin-top: auto;
+}
+
+footer p {
+    margin: 5px 0;
+}
+
+/* ====== Animations ====== */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes float {
+    0%, 100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-20px);
+    }
+}
+
+/* ====== Responsive Design ====== */
+@media (max-width: 768px) {
+    .hero-section {
+        padding: 50px 0;
+    }
+    
+    .hero-section h1 {
+        font-size: 2rem;
+    }
+    
+    .feature-badges .badge {
+        display: block;
+        margin-bottom: 10px;
+    }
+    
+    .stat-box {
+        margin-bottom: 20px;
+    }
+}
+
+/* ====== Print Styles ====== */
+@media print {
+    .navbar,
+    footer,
+    .btn {
+        display: none;
+    }
+    
+    .card {
+        box-shadow: none !important;
+        border: 1px solid #ddd !important;
+    }
+}
+
+/* ====== Loading Spinner ====== */
+.spinner-border {
+    display: none;
+}
+
+.loading .spinner-border {
+    display: inline-block;
+}
+
+/* ====== Tooltips ====== */
+.tooltip-inner {
+    background-color: var(--dark-color);
+    padding: 10px 15px;
+}
+
+/* ====== Custom Scrollbar ====== */
+::-webkit-scrollbar {
+    width: 10px;
+}
+
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--primary-color);
+    border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #0a58ca;
+}

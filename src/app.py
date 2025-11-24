@@ -42,7 +42,7 @@ print("=" * 80)
 # =============================================================================
 
 # Cargar el dataset 
-df = pd.read_csv('/workspaces/APP-web-ML--Flask-DAN/data/raw/Final_data.csv')
+df = pd.read_csv('/workspaces/APP-web-ML--Flask-DAN/data/raw/Final_data.csv', sep=';')
 
 print("\n📊 INFORMACIÓN GENERAL DEL DATASET")
 print("-" * 80)
@@ -56,17 +56,17 @@ print(df.dtypes.value_counts())
 print(f"\nInformación detallada:")
 df.info()
 
-# Verificar variable target
-print("\n🎯 ANÁLISIS DE VARIABLE TARGET: Fat_Percentage")
+# Verificar variable Objetivo
+print("\n🎯 ANÁLISIS DE VARIABLE OBJETIVO: Fat_Percentage")
 print("-" * 80)
-print(df['Fat_Percentage'].describe())
+print(df['Fat_Percentage'].describe()) # MEDIA 26, STD 5. ,MIN 11, MEDIANA 25.82, MAX 35
 print(f"\nValores nulos en target: {df['Fat_Percentage'].isnull().sum()}")
 
 # =============================================================================
 # 3. ANÁLISIS EXPLORATORIO DE DATOS (EDA)
 # =============================================================================
 
-print("\n📈 ANÁLISIS EXPLORATORIO DE DATOS")
+print("\n📈 ANÁLISIS EXPLORATORIO DE DATOS EDA")
 print("-" * 80)
 
 # Valores nulos por columna

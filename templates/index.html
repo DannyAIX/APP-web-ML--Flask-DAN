@@ -1,0 +1,513 @@
+<!-- =================================================================== -->
+<!-- templates/index.html - PÁGINA PRINCIPAL -->
+<!-- =================================================================== -->
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Predictor de Grasa Corporal | Fat Percentage ML</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container">
+            <a class="navbar-brand" href="/">
+                <i class="fas fa-heartbeat"></i> Fat Percentage Predictor
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="/">Inicio</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/about">Sobre el Proyecto</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero-section">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-6">
+                    <h1 class="display-4 fw-bold mb-4">Predice tu Porcentaje de Grasa Corporal</h1>
+                    <p class="lead mb-4">
+                        Utiliza inteligencia artificial y XGBoost para estimar tu porcentaje de grasa
+                        basándote en tus hábitos de vida, dieta y ejercicio.
+                    </p>
+                    <div class="feature-badges">
+                        <span class="badge bg-success me-2"><i class="fas fa-check"></i> Machine Learning</span>
+                        <span class="badge bg-info me-2"><i class="fas fa-chart-line"></i> XGBoost</span>
+                        <span class="badge bg-warning"><i class="fas fa-brain"></i> IA Avanzada</span>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="hero-image">
+                        <i class="fas fa-running fa-10x text-primary"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Formulario Principal -->
+    <section class="form-section py-5">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-10">
+                    <div class="card shadow-lg">
+                        <div class="card-header bg-primary text-white">
+                            <h3 class="mb-0"><i class="fas fa-clipboard-list"></i> Ingresa tus Datos</h3>
+                        </div>
+                        <div class="card-body p-4">
+                            <form method="POST" action="/predict" id="predictionForm">
+                                
+                                <!-- Información Personal -->
+                                <div class="section-header mb-4">
+                                    <h4><i class="fas fa-user"></i> Información Personal</h4>
+                                </div>
+                                
+                                <div class="row g-3 mb-4">
+                                    <div class="col-md-3">
+                                        <label for="age" class="form-label">Edad (años)</label>
+                                        <input type="number" class="form-control" id="age" name="age" 
+                                               min="15" max="100" value="30" required>
+                                    </div>
+                                    
+                                    <div class="col-md-3">
+                                        <label for="gender" class="form-label">Género</label>
+                                        <select class="form-select" id="gender" name="gender" required>
+                                            <option value="Male">Masculino</option>
+                                            <option value="Female">Femenino</option>
+                                        </select>
+                                    </div>
+                                    
+                                    <div class="col-md-3">
+                                        <label for="weight" class="form-label">Peso (kg)</label>
+                                        <input type="number" class="form-control" id="weight" name="weight" 
+                                               min="30" max="200" step="0.1" value="70" required>
+                                    </div>
+                                    
+                                    <div class="col-md-3">
+                                        <label for="height" class="form-label">Altura (m)</label>
+                                        <input type="number" class="form-control" id="height" name="height" 
+                                               min="1.0" max="2.5" step="0.01" value="1.75" required>
+                                    </div>
+                                </div>
+
+                                <!-- Actividad Física -->
+                                <div class="section-header mb-4">
+                                    <h4><i class="fas fa-dumbbell"></i> Actividad Física</h4>
+                                </div>
+                                
+                                <div class="row g-3 mb-4">
+                                    <div class="col-md-4">
+                                        <label for="workout_frequency" class="form-label">Días de ejercicio/semana</label>
+                                        <input type="number" class="form-control" id="workout_frequency" 
+                                               name="workout_frequency" min="0" max="7" value="3" required>
+                                    </div>
+                                    
+                                    <div class="col-md-4">
+                                        <label for="workout_type" class="form-label">Tipo de entrenamiento</label>
+                                        <select class="form-select" id="workout_type" name="workout_type" required>
+                                            <option value="Cardio">Cardio</option>
+                                            <option value="Strength">Fuerza</option>
+                                            <option value="HIIT">HIIT</option>
+                                            <option value="Yoga">Yoga</option>
+                                        </select>
+                                    </div>
+                                    
+                                    <div class="col-md-4">
+                                        <label for="experience_level" class="form-label">Nivel de experiencia</label>
+                                        <select class="form-select" id="experience_level" name="experience_level" required>
+                                            <option value="1">Principiante</option>
+                                            <option value="2" selected>Intermedio</option>
+                                            <option value="3">Avanzado</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="row g-3 mb-4">
+                                    <div class="col-md-3">
+                                        <label for="session_duration" class="form-label">Duración sesión (horas)</label>
+                                        <input type="number" class="form-control" id="session_duration" 
+                                               name="session_duration" min="0.1" max="5" step="0.1" value="1" required>
+                                    </div>
+                                    
+                                    <div class="col-md-3">
+                                        <label for="calories_burned" class="form-label">Calorías quemadas</label>
+                                        <input type="number" class="form-control" id="calories_burned" 
+                                               name="calories_burned" min="0" max="2000" value="300" required>
+                                    </div>
+                                    
+                                    <div class="col-md-3">
+                                        <label for="resting_bpm" class="form-label">BPM en reposo</label>
+                                        <input type="number" class="form-control" id="resting_bpm" 
+                                               name="resting_bpm" min="40" max="120" value="70" required>
+                                    </div>
+                                    
+                                    <div class="col-md-3">
+                                        <label for="avg_bpm" class="form-label">BPM promedio ejercicio</label>
+                                        <input type="number" class="form-control" id="avg_bpm" 
+                                               name="avg_bpm" min="60" max="200" value="120" required>
+                                    </div>
+                                </div>
+
+                                <!-- Nutrición -->
+                                <div class="section-header mb-4">
+                                    <h4><i class="fas fa-utensils"></i> Nutrición Diaria</h4>
+                                </div>
+                                
+                                <div class="row g-3 mb-4">
+                                    <div class="col-md-3">
+                                        <label for="calories" class="form-label">Calorías totales</label>
+                                        <input type="number" class="form-control" id="calories" name="calories" 
+                                               min="500" max="5000" value="2000" required>
+                                    </div>
+                                    
+                                    <div class="col-md-3">
+                                        <label for="proteins" class="form-label">Proteínas (g)</label>
+                                        <input type="number" class="form-control" id="proteins" name="proteins" 
+                                               min="0" max="500" value="100" required>
+                                    </div>
+                                    
+                                    <div class="col-md-3">
+                                        <label for="carbs" class="form-label">Carbohidratos (g)</label>
+                                        <input type="number" class="form-control" id="carbs" name="carbs" 
+                                               min="0" max="1000" value="200" required>
+                                    </div>
+                                    
+                                    <div class="col-md-3">
+                                        <label for="fats" class="form-label">Grasas (g)</label>
+                                        <input type="number" class="form-control" id="fats" name="fats" 
+                                               min="0" max="300" value="60" required>
+                                    </div>
+                                </div>
+
+                                <!-- Botón de envío -->
+                                <div class="text-center mt-4">
+                                    <button type="submit" class="btn btn-primary btn-lg px-5">
+                                        <i class="fas fa-calculator"></i> Calcular Porcentaje de Grasa
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="features-section py-5 bg-light">
+        <div class="container">
+            <h2 class="text-center mb-5">¿Por qué usar este predictor?</h2>
+            <div class="row g-4">
+                <div class="col-md-4">
+                    <div class="feature-card text-center">
+                        <div class="feature-icon">
+                            <i class="fas fa-brain fa-3x text-primary"></i>
+                        </div>
+                        <h4>Inteligencia Artificial</h4>
+                        <p>Modelo entrenado con XGBoost usando 20,000+ datos reales</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="feature-card text-center">
+                        <div class="feature-icon">
+                            <i class="fas fa-chart-bar fa-3x text-success"></i>
+                        </div>
+                        <h4>Alta Precisión</h4>
+                        <p>R² > 0.85 con validación cruzada y optimización de hiperparámetros</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="feature-card text-center">
+                        <div class="feature-icon">
+                            <i class="fas fa-shield-alt fa-3x text-info"></i>
+                        </div>
+                        <h4>Privacidad</h4>
+                        <p>Tus datos no se almacenan. Cálculos en tiempo real</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-dark text-white py-4">
+        <div class="container text-center">
+            <p class="mb-0">&copy; 2024 Fat Percentage Predictor | Proyecto de Machine Learning</p>
+            <p class="small">Desarrollado con Flask, XGBoost y Bootstrap</p>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Custom JS -->
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html>
+
+
+<!-- =================================================================== -->
+<!-- templates/result.html - PÁGINA DE RESULTADOS -->
+<!-- =================================================================== -->
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resultados | Fat Percentage Predictor</title>
+    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container">
+            <a class="navbar-brand" href="/">
+                <i class="fas fa-heartbeat"></i> Fat Percentage Predictor
+            </a>
+        </div>
+    </nav>
+
+    <section class="results-section py-5">
+        <div class="container">
+            {% if error %}
+            <div class="alert alert-danger" role="alert">
+                <h4 class="alert-heading"><i class="fas fa-exclamation-triangle"></i> Error</h4>
+                <p>{{ error }}</p>
+                <hr>
+                <a href="/" class="btn btn-danger">Volver al formulario</a>
+            </div>
+            {% else %}
+            <div class="row justify-content-center">
+                <div class="col-lg-8">
+                    <!-- Resultado Principal -->
+                    <div class="card shadow-lg mb-4">
+                        <div class="card-header bg-{{ result.color }} text-white">
+                            <h3 class="mb-0">{{ result.icon }} Resultados de tu Predicción</h3>
+                        </div>
+                        <div class="card-body text-center p-5">
+                            <h1 class="display-1 fw-bold text-{{ result.color }}">{{ result.fat_percentage }}%</h1>
+                            <p class="lead">Porcentaje de Grasa Corporal Estimado</p>
+                            
+                            <div class="alert alert-{{ result.color }} mt-4" role="alert">
+                                <h4 class="alert-heading">Categoría: {{ result.category }}</h4>
+                                <p class="mb-0">{{ result.recommendation }}</p>
+                            </div>
+                            
+                            <div class="row text-center mt-4">
+                                <div class="col-md-6">
+                                    <div class="stat-box">
+                                        <i class="fas fa-weight fa-2x text-primary"></i>
+                                        <h5>IMC Calculado</h5>
+                                        <p class="h3">{{ result.bmi }}</p>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="stat-box">
+                                        <i class="fas fa-percentage fa-2x text-success"></i>
+                                        <h5>% Grasa</h5>
+                                        <p class="h3">{{ result.fat_percentage }}%</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Datos Ingresados -->
+                    <div class="card shadow mb-4">
+                        <div class="card-header bg-secondary text-white">
+                            <h4 class="mb-0"><i class="fas fa-info-circle"></i> Datos Ingresados</h4>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <ul class="list-group">
+                                        <li class="list-group-item"><strong>Edad:</strong> {{ input_data.Age }} años</li>
+                                        <li class="list-group-item"><strong>Género:</strong> {{ input_data.Gender }}</li>
+                                        <li class="list-group-item"><strong>Peso:</strong> {{ input_data['Weight (kg)'] }} kg</li>
+                                        <li class="list-group-item"><strong>Altura:</strong> {{ input_data['Height (m)'] }} m</li>
+                                        <li class="list-group-item"><strong>Ejercicio/semana:</strong> {{ input_data['Workout_Frequency (days/week)'] }} días</li>
+                                    </ul>
+                                </div>
+                                <div class="col-md-6">
+                                    <ul class="list-group">
+                                        <li class="list-group-item"><strong>Tipo de ejercicio:</strong> {{ input_data.Workout_Type }}</li>
+                                        <li class="list-group-item"><strong>Calorías diarias:</strong> {{ input_data.Calories }} kcal</li>
+                                        <li class="list-group-item"><strong>Proteínas:</strong> {{ input_data.Proteins }} g</li>
+                                        <li class="list-group-item"><strong>Carbohidratos:</strong> {{ input_data.Carbs }} g</li>
+                                        <li class="list-group-item"><strong>Grasas:</strong> {{ input_data.Fats }} g</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Botones de acción -->
+                    <div class="text-center">
+                        <a href="/" class="btn btn-primary btn-lg me-2">
+                            <i class="fas fa-redo"></i> Nueva Predicción
+                        </a>
+                        <button onclick="window.print()" class="btn btn-secondary btn-lg">
+                            <i class="fas fa-print"></i> Imprimir Resultados
+                        </button>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </section>
+
+    <footer class="bg-dark text-white py-4 mt-5">
+        <div class="container text-center">
+            <p class="mb-0">&copy; 2024 Fat Percentage Predictor</p>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
+
+
+<!-- =================================================================== -->
+<!-- templates/about.html - PÁGINA SOBRE EL PROYECTO -->
+<!-- =================================================================== -->
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sobre el Proyecto | Fat Percentage Predictor</title>
+    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container">
+            <a class="navbar-brand" href="/">
+                <i class="fas fa-heartbeat"></i> Fat Percentage Predictor
+            </a>
+            <div class="navbar-nav ms-auto">
+                <a class="nav-link" href="/">Inicio</a>
+                <a class="nav-link active" href="/about">Sobre el Proyecto</a>
+            </div>
+        </div>
+    </nav>
+
+    <section class="py-5">
+        <div class="container">
+            <h1 class="text-center mb-5">Sobre el Proyecto</h1>
+            
+            <div class="row">
+                <div class="col-lg-8 mx-auto">
+                    <div class="card shadow mb-4">
+                        <div class="card-body p-4">
+                            <h3><i class="fas fa-info-circle text-primary"></i> ¿Qué es este proyecto?</h3>
+                            <p>
+                                Este es un predictor de porcentaje de grasa corporal desarrollado con Machine Learning,
+                                específicamente usando el algoritmo XGBoost. El modelo fue entrenado con más de 20,000
+                                registros de datos de lifestyle que incluyen información sobre ejercicio, nutrición y
+                                características físicas.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="card shadow mb-4">
+                        <div class="card-body p-4">
+                            <h3><i class="fas fa-cogs text-success"></i> Tecnologías Utilizadas</h3>
+                            <ul class="list-unstyled">
+                                <li><i class="fas fa-check text-success"></i> <strong>Python 3.11</strong> - Lenguaje de programación</li>
+                                <li><i class="fas fa-check text-success"></i> <strong>Flask</strong> - Framework web</li>
+                                <li><i class="fas fa-check text-success"></i> <strong>XGBoost</strong> - Algoritmo de ML</li>
+                                <li><i class="fas fa-check text-success"></i> <strong>Scikit-learn</strong> - Preprocesamiento y métricas</li>
+                                <li><i class="fas fa-check text-success"></i> <strong>Bootstrap 5</strong> - Framework CSS</li>
+                                <li><i class="fas fa-check text-success"></i> <strong>Render</strong> - Hosting y deployment</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="card shadow mb-4">
+                        <div class="card-body p-4">
+                            <h3><i class="fas fa-chart-line text-info"></i> Métricas del Modelo</h3>
+                            <ul>
+                                <li><strong>R² Score:</strong> > 0.85 (El modelo explica más del 85% de la varianza)</li>
+                                <li><strong>MAE:</strong> ~2-3% (Error promedio de predicción)</li>
+                                <li><strong>Features:</strong> 54+ variables analizadas</li>
+                                <li><strong>Validación:</strong> Cross-validation K-Fold</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="card shadow mb-4">
+                        <div class="card-body p-4">
+                            <h3><i class="fas fa-database text-warning"></i> Dataset</h3>
+                            <p>
+                                <strong>Fuente:</strong> 
+                                <a href="https://www.kaggle.com/datasets/jockeroika/life-style-data" target="_blank">
+                                    Kaggle - Life Style Data
+                                </a>
+                            </p>
+                            <p>
+                                El dataset incluye información sobre hábitos de vida, ejercicio, nutrición y
+                                características físicas de más de 20,000 individuos.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="card shadow mb-4 bg-warning">
+                        <div class="card-body p-4">
+                            <h3><i class="fas fa-exclamation-triangle"></i> Disclaimer</h3>
+                            <p class="mb-0">
+                                <strong>Importante:</strong> Este predictor es una herramienta educativa y no debe
+                                ser utilizado como sustituto de evaluación médica profesional. Para obtener mediciones
+                                precisas de composición corporal, consulta con un profesional de la salud.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="text-center">
+                        <a href="/" class="btn btn-primary btn-lg">
+                            <i class="fas fa-arrow-left"></i> Volver al Inicio
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="bg-dark text-white py-4 mt-5">
+        <div class="container text-center">
+            <p class="mb-0">&copy; 2024 Fat Percentage Predictor | Proyecto de Machine Learning</p>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
