@@ -1,0 +1,12 @@
+services:
+  - type: web
+    name: flask-ml-app
+    env: python
+    region: oregon # o la que uses
+    plan: free # o el plan que uses
+    branch: main
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn app:app
+    envVars:
+      - key: PYTHON_VERSION
+        value: "3.11.9"
