@@ -10,6 +10,10 @@ import os
 
 app = Flask(__name__)
 
+@app.route('/')
+def index():
+    return render_template('index.html', result=None)
+
 # Configuración
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'clave-secreta')
 

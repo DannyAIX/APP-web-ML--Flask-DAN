@@ -310,6 +310,9 @@
 
             <!-- HEADER SEGURO -->
             {% if result %}
+                <p class="h3">{{ result.bmi }}</p>
+            {% endif %}
+            {% if result %}
                 <div class="card-header bg-{{ result.color }} text-white">
                     <h3 class="mb-0">{{ result.icon }} Resultados de tu Predicción</h3>
                 </div>
