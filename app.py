@@ -14,7 +14,7 @@ app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'clave-secreta')
 # CARGA DE MODELO Y ENCODERS
 # ============================
 try:
-    model = joblib.load('models/xgboost_fat_percentage_model.pkl')
+    model = joblib.load('xgboost_fat_percentage_model.pkl')
     encoders = joblib.load('models/label_encoders.pkl')
     print("✅ Modelo y encoders cargados exitosamente")
 except Exception as e:
