@@ -78,11 +78,9 @@ def predict():
     data = request.form.to_dict()
     df = preprocess_input(data)
 
-    # Predicción
     pred = model.predict(df)[0]
     pred = round(float(pred), 2)
 
-    # Determinar categoría
     if pred < 10:
         category = "Muy Bajo"
         color = "primary"
@@ -118,6 +116,7 @@ def predict():
     }
 
     return render_template("result.html", result=result)
+
 
 # ============================
 # EJECUCIÓN
