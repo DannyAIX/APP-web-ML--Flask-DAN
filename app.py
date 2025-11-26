@@ -7,16 +7,14 @@ import os
 app = Flask(__name__)
 
 # ==========================
-# CARGA DE MODELO Y ENCODERS
+# CARGA DE MODELO
 # ==========================
 try:
-    model = joblib.load('models/xgboost_fat_percentage_model.pkl')
-    encoders = joblib.load('models/label_encoders.pkl')
-    print("✅ Modelo y encoders cargados")
+    model = joblib.load('models/xgb_best_model.pkl')
+    print("✅ Modelo cargado")
 except Exception as e:
     print("❌ Error cargando modelo:", e)
     model = None
-    encoders = {}
 
 # ==========================
 # MAPEOS
@@ -52,22 +50,11 @@ NUMERIC_FIELDS = {
 }
 
 # ==========================
-# LABEL ENCODER SAFE
-# ==========================
-def safe_apply_label_encoder(series, encoder):
-    series = series.astype(str)
-    valid = set(encoder.classes_)
-    default = encoder.classes_[0]
-    return series.apply(lambda x: x if x in valid else default)
-
-
-# ==========================
-# RUTA PRINCIPAL   (/)
+# RUTA PRINCIPAL (/)
 # ==========================
 @app.route('/')
 def home():
     return render_template('index.html')
-
 
 # ==========================
 # RUTA DE PREDICCIÓN (/predict)
@@ -79,7 +66,7 @@ def predict():
 
     data = request.get_json()
 
-    # Convertir campos numéricos
+    # Conversión numérica
     for key, cast in NUMERIC_FIELDS.items():
         if key in data:
             try:
@@ -87,18 +74,18 @@ def predict():
             except:
                 data[key] = 0
 
-    # Aplicar mapeos de categorías
+    # Mapeos de categorías
     for key, mapping in FORM_MAPPINGS.items():
         if key in data:
-            data[key] = mapping.get(data[key], mapping[list(mapping.keys())[0]])
+            data[key] = mapping.get(data[key], list(mapping.values())[0])
 
+    # Convertir a DataFrame
     df = pd.DataFrame([data])
 
-    # Aplicar label encoders
-    for col, encoder in encoders.items():
+    # Convertir columnas categóricas a category
+    for col in FORM_MAPPINGS.keys():
         if col in df.columns:
-            df[col] = safe_apply_label_encoder(df[col], encoder)
-            df[col] = encoder.transform(df[col])
+            df[col] = df[col].astype('category')
 
     # ======================
     # HACER LA PREDICCIÓN
@@ -112,9 +99,8 @@ def predict():
         "predicted_bodyfat": round(pred, 2)
     })
 
-
 # ==========================
-# RENDER: CONFIGURACIÓN FINAL
+# RUN APP
 # ==========================
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 10000))

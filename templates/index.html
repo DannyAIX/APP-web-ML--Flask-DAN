@@ -11,9 +11,10 @@
   <div class="container py-5">
     <h1 class="mb-4">Predictor de Porcentaje de Grasa</h1>
 
-    <form method="POST" action="/predict" id="predictionForm">
+    <form id="predictionForm">
       <div class="row g-3">
 
+        <!-- CAMPOS DEL FORMULARIO -->
         <div class="col-md-2">
           <label class="form-label">Edad</label>
           <input name="age" class="form-control" type="number" value="30">
@@ -43,7 +44,7 @@
         </div>
 
         <div class="col-md-2">
-          <label class="form-label">Tipo</label>
+          <label class="form-label">Tipo ejercicio</label>
           <select name="workout_type" class="form-select">
             <option value="Cardio">Cardio</option>
             <option value="Strength">Fuerza</option>
@@ -61,6 +62,47 @@
           </select>
         </div>
 
+        <!-- CAMPOS ADICIONALES QUE TU MODELO ESPERA -->
+        <div class="col-md-2">
+          <label class="form-label">Calorías</label>
+          <input name="calories" class="form-control" type="number" value="2000">
+        </div>
+
+        <div class="col-md-2">
+          <label class="form-label">Proteínas (g)</label>
+          <input name="proteins" class="form-control" type="number" value="150">
+        </div>
+
+        <div class="col-md-2">
+          <label class="form-label">Carbs (g)</label>
+          <input name="carbs" class="form-control" type="number" value="200">
+        </div>
+
+        <div class="col-md-2">
+          <label class="form-label">Grasas (g)</label>
+          <input name="fats" class="form-control" type="number" value="60">
+        </div>
+
+        <div class="col-md-2">
+          <label class="form-label">Resting BPM</label>
+          <input name="resting_bpm" class="form-control" type="number" value="65">
+        </div>
+
+        <div class="col-md-2">
+          <label class="form-label">Avg BPM</label>
+          <input name="avg_bpm" class="form-control" type="number" value="120">
+        </div>
+
+        <div class="col-md-2">
+          <label class="form-label">Duración sesión (min)</label>
+          <input name="session_duration" class="form-control" type="number" value="45">
+        </div>
+
+        <div class="col-md-2">
+          <label class="form-label">Calorías quemadas</label>
+          <input name="calories_burned" class="form-control" type="number" value="400">
+        </div>
+
         <div class="col-12 mt-4">
           <button type="submit" class="btn btn-primary">Predecir</button>
         </div>
@@ -69,7 +111,6 @@
     </form>
 
     <div id="resultBox" class="alert alert-info mt-4 d-none"></div>
-
   </div>
 
 <script>
@@ -89,6 +130,14 @@ document.getElementById("predictionForm").addEventListener("submit", async (e) =
 
   const box = document.getElementById("resultBox");
   box.classList.remove("d-none");
+
+  if (result.error) {
+    box.classList.replace("alert-info", "alert-danger");
+    box.innerHTML = `<strong>Error:</strong> ${result.error}`;
+    return;
+  }
+
+  box.classList.replace("alert-danger", "alert-info");
   box.innerHTML = `<strong>Resultado:</strong> ${result.predicted_bodyfat}%`;
 });
 </script>
