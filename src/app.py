@@ -111,8 +111,19 @@ plt.show()
 # =============================================================================
 # 9. GUARDAR MODELO
 # =============================================================================
-joblib.dump(best_model, 'xgb_best_model.pkl')
+joblib.dump(best_model, '/workspaces/APP-web-ML--Flask-DAN/models/xgb_best_model.pkl')
 print("💾 Modelo guardado como 'xgb_best_model.pkl'")
 
 # Para cargar el modelo más adelante:
 # best_model_loaded = joblib.load('xgb_best_model.pkl')
+
+# =============================================================================
+# 10. GUARDAR LISTA EXACTA DE FEATURES
+# =============================================================================
+feature_names = best_model.get_booster().feature_names
+
+import json
+with open("/workspaces/APP-web-ML--Flask-DAN/models/feature_names.json", "w") as f:
+    json.dump(feature_names, f)
+
+print("📁 Feature names guardados en 'feature_names.json'")

@@ -2,6 +2,7 @@ from flask import Flask, render_template, request, jsonify
 import joblib
 import pandas as pd
 import numpy as np
+import json
 import os
 
 app = Flask(__name__)
@@ -15,6 +16,17 @@ try:
 except Exception as e:
     print("❌ Error cargando modelo:", e)
     model = None
+
+# ==========================
+# CARGA DE FEATURE NAMES
+# ==========================
+try:
+    with open('models/feature_names.json', 'r') as f:
+        FEATURE_NAMES = json.load(f)
+    print("📁 Feature names cargados")
+except Exception as e:
+    print("❌ Error cargando feature_names.json:", e)
+    FEATURE_NAMES = None
 
 # ==========================
 # MAPEOS
@@ -50,19 +62,22 @@ NUMERIC_FIELDS = {
 }
 
 # ==========================
-# RUTA PRINCIPAL (/)
+# RUTA PRINCIPAL
 # ==========================
 @app.route('/')
 def home():
     return render_template('index.html')
 
 # ==========================
-# RUTA DE PREDICCIÓN (/predict)
+# RUTA DE PREDICCIÓN
 # ==========================
 @app.route('/predict', methods=['POST'])
 def predict():
     if model is None:
         return jsonify({"error": "Modelo no cargado"}), 500
+    
+    if FEATURE_NAMES is None:
+        return jsonify({"error": "Feature names no cargados"}), 500
 
     data = request.get_json()
 
@@ -74,21 +89,29 @@ def predict():
             except:
                 data[key] = 0
 
-    # Mapeos de categorías
+    # Mapeos categóricos
     for key, mapping in FORM_MAPPINGS.items():
         if key in data:
             data[key] = mapping.get(data[key], list(mapping.values())[0])
 
-    # Convertir a DataFrame
+    # Crear DF
     df = pd.DataFrame([data])
 
-    # Convertir columnas categóricas a category
+    # Convertir a category
     for col in FORM_MAPPINGS.keys():
         if col in df.columns:
             df[col] = df[col].astype('category')
 
+    # ===============================================================
+    # ORDEN CRÍTICO DE FEATURES (para que coincida EXACTO al modelo)
+    # ===============================================================
+    try:
+        df = df.reindex(columns=FEATURE_NAMES)
+    except Exception as e:
+        return jsonify({"error": f"Error reordenando features: {e}"}), 500
+
     # ======================
-    # HACER LA PREDICCIÓN
+    # PREDCCIÓN
     # ======================
     try:
         pred = float(model.predict(df)[0])
